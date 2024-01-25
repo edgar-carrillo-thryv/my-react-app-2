@@ -24,8 +24,11 @@ function App() {
 
   const addNotification = (notif) => {
     const newNotifs = notifications.slice()
-    newNotifs.push(notif)
-    setNotifications(newNotifs)
+    const notifsIds = notifications.map((notif) => notif.notifId)
+    if (!notifsIds.includes(notif.notifId)) {
+      newNotifs.push(notif)
+      setNotifications(newNotifs)
+    }
   }
 
   useEffect(() => {
@@ -40,7 +43,7 @@ function App() {
     <>
       <div className="w-full flex flex-col justify-center items-center">
         <h1 className="!text-4xl pb-5">Center 2</h1>
-        <div className="w-full h-[45px] text-center">
+        <div className="w-full h-[45px]">
           {notifications.map((notif, i) => (
             <div className="mb-5" key={i}>
               <NotificationBar
@@ -50,7 +53,7 @@ function App() {
                   (notif.type === "cc-downgrade" && "information")
                 }
                 content={
-                  <div>
+                  <div className="text-center">
                     <p>{notif.message}</p>
                     <br></br>
                     <p>Primary Key: {notif.notifId}</p>
