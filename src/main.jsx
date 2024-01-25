@@ -1,11 +1,16 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import App from "./App.jsx"
 import "./index.css"
+import { AuthenticatedApp } from "./authenticated-app.jsx"
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev"
+
+// Adds messages only in a dev environment
+loadDevMessages()
+loadErrorMessages()
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AuthenticatedApp />
   </React.StrictMode>,
   document.getElementById("root")
 )
