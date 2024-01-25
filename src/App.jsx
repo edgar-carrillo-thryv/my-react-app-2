@@ -9,36 +9,28 @@ const NOTIFICATIONS_SUBSCRIPTION = gql`
   subscription notificationAdded {
     notificationAdded {
       message
-    }
-  }
-`
-
-export const SUBSCRIPTION_FOR_MESSAGE_CREATED = gql`
-  subscription onMessageCreated {
-    onMessageCreated {
-      sk1
-      pk1
+      notifId
+      type
     }
   }
 `
 
 function App() {
   const [notifications, setNotifications] = useState([])
-  const [count, setCount] = useState(0)
 
   const { data: subscriptionAlert } = useSubscription(
     NOTIFICATIONS_SUBSCRIPTION
   )
 
-  const addNotification = (message) => {
+  const addNotification = (notif) => {
     const newNotifs = notifications.slice()
-    newNotifs.push(message)
+    newNotifs.push(notif)
     setNotifications(newNotifs)
   }
 
   useEffect(() => {
     if (subscriptionAlert) {
-      addNotification(subscriptionAlert.notificationAdded.message)
+      addNotification(subscriptionAlert.notificationAdded)
     }
   }, [subscriptionAlert])
 
@@ -47,22 +39,27 @@ function App() {
   return (
     <>
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="w-full h-[45px]">
-          {notifications.map((message, i) => (
-            <NotificationBar
-              key={i}
-              variant="success"
-              content={<p>{message}</p>}
-            />
+        <h1 className="!text-4xl pb-5">Center 2</h1>
+        <div className="w-full h-[45px] text-center">
+          {notifications.map((notif, i) => (
+            <div className="mb-5" key={i}>
+              <NotificationBar
+                variant={
+                  (notif.type === "staff-delete" && "success") ||
+                  (notif.type === "cc-cancel" && "error") ||
+                  (notif.type === "cc-downgrade" && "information")
+                }
+                content={
+                  <div>
+                    <p>{notif.message}</p>
+                    <br></br>
+                    <p>Primary Key: {notif.notifId}</p>
+                  </div>
+                }
+              />
+            </div>
           ))}
         </div>
-
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          className="p-4 border-black border w-[100px]"
-        >
-          count is {count}
-        </button>
       </div>
     </>
   )
